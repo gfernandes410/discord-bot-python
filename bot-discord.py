@@ -12,7 +12,26 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 bot = commands.Bot(command_prefix="!")
 client = discord.Client()
-zz
+
+async def load_sound_source(file):
+    return await discord.FFmpegOpusAudio.from_probe(file)
+
+async def load_voice_channel(ctx):
+    author = ctx.message.author
+    channel = author.voice.channel.id
+    channel = bot.get_channel(channel)
+
+    if ctx.voice_client:
+        await disconnect_channel(ctx)
+
+    return await channel.connect()        
+
+async def disconnect_channel(ctx):
+    if ctx.voice_client:
+        await ctx.voice_client.disconnect()
+
+async def on_ready():
+    print ("Ready")
 
 @bot.command(pass_context=True)
 async def leave(ctx):
